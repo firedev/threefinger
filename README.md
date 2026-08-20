@@ -28,6 +28,8 @@ The **binary itself** needs Accessibility — not your terminal. Under launchd t
 
 System Settings → Privacy & Security → Accessibility → **+** → the installed `threefinger` binary. If touches don't register at all on recent macOS, add it under Input Monitoring too.
 
+Accessibility is granted to the specific binary file: after an update replaces it, the grant can silently drop — swipes stop posting keys with no error. Re-grant in the same Settings pane.
+
 ## Configure
 
 Config lives in `~/.config/threefinger.json`, Karabiner-style. Written with defaults on first run:
