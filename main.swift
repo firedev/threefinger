@@ -7,8 +7,11 @@ let KEY_SWIPE_RIGHT: CGKeyCode = 124 // → arrow
 let MODIFIERS: CGEventFlags = [.maskCommand, .maskAlternate] // ⌥⌘
 // ───────────────────────────────────────────────────────────────────────
 
+let verbose = CommandLine.arguments.contains("-v") || CommandLine.arguments.contains("--verbose")
+func log(_ s: String) { if verbose { print(s) } }
+
 if !AXIsProcessTrusted() {
-    print("No Accessibility permission — key events won't post. System Settings → Privacy & Security → Accessibility → add this binary (or your terminal), then restart it.")
+    FileHandle.standardError.write("No Accessibility permission — key events won't post. System Settings → Privacy & Security → Accessibility → add this binary, then restart it.\n".data(using: .utf8)!)
 }
 
 func postKey(_ key: CGKeyCode) {
@@ -40,7 +43,7 @@ let frameCallback: MTFrameCallbackFunction = { _, touches, n, _, _ in
     if !fired && abs(acc) > SWIPE_THRESHOLD {
         fired = true // one action per swipe, until all fingers lift
         postKey(acc < 0 ? KEY_SWIPE_LEFT : KEY_SWIPE_RIGHT)
-        print(acc < 0 ? "swipe left → key" : "swipe right → key")
+        log(acc < 0 ? "swipe left → key" : "swipe right → key")
     }
 }
 
@@ -65,5 +68,5 @@ for i in 0..<CFArrayGetCount(list) {
     MTRegisterContactFrameCallback(dev, frameCallback)
     MTDeviceStart(dev, 0)
 }
-print("threefinger: watching \(CFArrayGetCount(list)) multitouch device(s)")
+log("threefinger: watching \(CFArrayGetCount(list)) multitouch device(s)")
 CFRunLoopRun()
