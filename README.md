@@ -11,6 +11,15 @@ git clone <this repo> && cd threefinger
 make install   # builds, copies binary, loads a launchd agent (autostart + keep-alive)
 ```
 
+Or grab a prebuilt universal binary from [Releases](https://github.com/firedev/threefinger/releases) — it's ad-hoc signed, so clear quarantine after download:
+
+```sh
+tar xzf threefinger-*.tar.gz
+xattr -d com.apple.quarantine threefinger 2>/dev/null; ./threefinger -v
+```
+
+For autostart still clone the repo and run `make install` (it wires up the launchd agent).
+
 Installs to `/usr/local/bin` (or `~/.local/bin` if that's not writable) + `~/Library/LaunchAgents/com.firedev.threefinger.plist`. Re-running `make install` reinstalls cleanly.
 
 ## Permissions (read this)
