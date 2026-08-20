@@ -2,6 +2,8 @@
 
 Three-finger horizontal swipe on the macOS trackpad → any keyboard shortcut. A tiny single-file replacement for that one BetterTouchTool feature. Default: swipe left posts ⌥⌘←, swipe right posts ⌥⌘→. One action per swipe; re-arms when all fingers lift.
 
+![threefinger demo](demo.gif)
+
 **Why:** BetterTouchTool is paid, and nothing open source maps trackpad gestures to keyboard shortcuts. This does exactly that, in ~90 lines of Swift on the private `MultitouchSupport.framework`.
 
 ## Install
