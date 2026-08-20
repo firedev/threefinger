@@ -22,6 +22,10 @@ uninstall:
 	rm -f $(PLIST) $(BINDIR)/threefinger
 
 clean:
-	rm -f threefinger
+	rm -f threefinger threefinger-arm64.tar.gz
 
-.PHONY: run install uninstall clean
+release: threefinger
+	tar czf threefinger-arm64.tar.gz threefinger $(LABEL).plist
+	gh release upload "$$(gh release view --json tagName -q .tagName)" threefinger-arm64.tar.gz --clobber
+
+.PHONY: run install uninstall clean release

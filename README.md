@@ -6,21 +6,24 @@ Three-finger horizontal swipe on the macOS trackpad → any keyboard shortcut. A
 
 ## Install
 
-```sh
-git clone <this repo> && cd threefinger
-make install   # builds, copies binary, loads a launchd agent (autostart + keep-alive)
-```
-
-Or grab a prebuilt universal binary from [Releases](https://github.com/firedev/threefinger/releases) — it's ad-hoc signed, so clear quarantine after download:
+Apple Silicon, no build tools needed:
 
 ```sh
-tar xzf threefinger-*.tar.gz
-xattr -d com.apple.quarantine threefinger 2>/dev/null; ./threefinger -v
+curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/install.sh | bash
 ```
 
-For autostart still clone the repo and run `make install` (it wires up the launchd agent).
+Downloads the latest [release](https://github.com/firedev/threefinger/releases) binary into `~/.local/bin`, installs `~/Library/LaunchAgents/com.firedev.threefinger.plist`, and loads the daemon (autostart + keep-alive). Re-running updates cleanly.
 
-Installs to `/usr/local/bin` (or `~/.local/bin` if that's not writable) + `~/Library/LaunchAgents/com.firedev.threefinger.plist`. Re-running `make install` reinstalls cleanly.
+Don't download the release tar with a browser — the binary is ad-hoc signed, not notarized, and a browser download gets a Gatekeeper quarantine that blocks it. `curl`/`gh` downloads carry no quarantine.
+
+### Build from source
+
+```sh
+git clone https://github.com/firedev/threefinger && cd threefinger
+make install   # builds, copies binary, loads the launchd agent
+```
+
+Installs to `/usr/local/bin` (or `~/.local/bin` if that's not writable) + the same LaunchAgent. Re-running `make install` reinstalls cleanly.
 
 ## Permissions (read this)
 
