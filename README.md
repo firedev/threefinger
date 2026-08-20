@@ -4,7 +4,7 @@ Three-finger horizontal swipe on the macOS trackpad → any keyboard shortcut. A
 
 ![threefinger demo](demo.gif)
 
-> macOS's own 3-finger gestures (Mission Control, Space switching, three-finger drag) grab the same swipes. System Settings → Trackpad → More Gestures: set them to four fingers or off.
+> ⚠️ macOS's own 3-finger gestures (Mission Control, Space switching, three-finger drag) grab the same swipes. System Settings → Trackpad → More Gestures: set them to four fingers or off.
 
 **Why:** BetterTouchTool is paid, and nothing open source maps trackpad gestures to keyboard shortcuts. This does exactly that, in ~90 lines of Swift on the private `MultitouchSupport.framework`.
 
