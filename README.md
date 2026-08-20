@@ -4,6 +4,8 @@ Three-finger horizontal swipe on the macOS trackpad → any keyboard shortcut. A
 
 ![threefinger demo](demo.gif)
 
+> macOS's own 3-finger gestures (Mission Control, Space switching, three-finger drag) grab the same swipes. System Settings → Trackpad → More Gestures: set them to four fingers or off.
+
 **Why:** BetterTouchTool is paid, and nothing open source maps trackpad gestures to keyboard shortcuts. This does exactly that, in ~90 lines of Swift on the private `MultitouchSupport.framework`.
 
 ## Install
@@ -73,16 +75,13 @@ launchctl kickstart -k gui/$UID/com.firedev.threefinger
 
 Run `threefinger -v` in a terminal to watch gestures live while tuning (stop the daemon first, two instances double-fire).
 
-## Caveats
-
-- macOS's own 3-finger gestures (Mission Control, Space switching, three-finger drag) grab the same swipes. System Settings → Trackpad → More Gestures: set them to four fingers or off.
-- Private Apple API — may break on a macOS update.
-
 ## Uninstall
 
 ```sh
-make uninstall
+curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/uninstall.sh | bash
 ```
+
+Or from a clone: `make uninstall`.
 
 ## License
 
