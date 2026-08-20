@@ -21,16 +21,41 @@ System Settings → Privacy & Security → Accessibility → **+** → the insta
 
 ## Configure
 
-The whole config is three constants at the top of `main.swift`:
+Config lives in `~/.config/threefinger.json`, Karabiner-style. Written with defaults on first run:
 
-```swift
-let SWIPE_THRESHOLD: Float = 0.08                 // fraction of trackpad width
-let KEY_SWIPE_LEFT: CGKeyCode = 123               // ← arrow
-let KEY_SWIPE_RIGHT: CGKeyCode = 124              // → arrow
-let MODIFIERS: CGEventFlags = [.maskCommand, .maskAlternate]  // ⌥⌘
+```json
+{
+  "description": "three-finger swipe → switch tabs",
+  "manipulators": [
+    {
+      "from": { "gesture": "three_finger_swipe_left" },
+      "to": [
+        { "key_code": "left_arrow", "modifiers": ["left_command", "left_option"] }
+      ],
+      "type": "basic"
+    },
+    {
+      "from": { "gesture": "three_finger_swipe_right" },
+      "to": [
+        { "key_code": "right_arrow", "modifiers": ["left_command", "left_option"] }
+      ],
+      "type": "basic"
+    }
+  ]
+}
 ```
 
-Edit, `make install` again. Run `threefinger -v` in a terminal to watch swipes live while tuning.
+- **Gestures** (`from.gesture`): `three_finger_swipe_left` / `right` / `up` / `down`. Unmapped gestures do nothing.
+- **`to`**: array of `{key_code, modifiers}`, posted in order. Karabiner key names: `a`–`z`, `0`–`9`, `left_arrow`/`right_arrow`/`up_arrow`/`down_arrow`, `return_or_enter`, `escape`, `tab`, `spacebar`, `delete_or_backspace`, `page_up`/`page_down`, `home`/`end`, `f1`–`f12`. Modifiers: `command`, `option`, `shift`, `control` (with or without `left_`/`right_` prefix — macOS posts them the same).
+- **`threshold`**: optional top-level key, fraction of trackpad width (default `0.08`).
+
+Config is read once at startup. After editing, restart the daemon:
+
+```sh
+launchctl kickstart -k gui/$UID/com.firedev.threefinger
+```
+
+Run `threefinger -v` in a terminal to watch gestures live while tuning (stop the daemon first, two instances double-fire).
 
 ## Caveats
 
