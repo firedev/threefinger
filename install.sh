@@ -13,10 +13,18 @@ curl -fsSL "https://github.com/$REPO/releases/latest/download/threefinger-arm64.
 
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
 mkdir -p "$BINDIR" "$AGENTS"
-install -m 755 "$tmp/threefinger" "$BINDIR/threefinger"
+if cmp -s "$tmp/threefinger" "$BINDIR/threefinger"; then
+    replaced=0
+else
+    replaced=1
+    install -m 755 "$tmp/threefinger" "$BINDIR/threefinger"
+fi
 sed "s|/usr/local/bin|$BINDIR|" "$tmp/$LABEL.plist" > "$AGENTS/$LABEL.plist"
 launchctl bootstrap "gui/$(id -u)" "$AGENTS/$LABEL.plist"
 
 echo ">>> Installed and loaded ($BINDIR/threefinger)."
-echo ">>> Grant Accessibility to the BINARY itself: System Settings → Privacy & Security → Accessibility → + → $BINDIR/threefinger."
-echo ">>> Re-grant after every update that replaces the file — swipes silently stop posting otherwise."
+if [ "$replaced" = 1 ]; then
+    echo ">>> Binary was replaced, so its Accessibility grant is void: System Settings → Privacy & Security → Accessibility → remove threefinger (−), then + → $BINDIR/threefinger. Toggling the switch is not enough."
+else
+    echo ">>> Binary unchanged — existing Accessibility grant still valid."
+fi
