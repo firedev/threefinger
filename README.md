@@ -10,6 +10,15 @@ Three-finger horizontal swipe on the macOS trackpad → any keyboard shortcut. A
 
 ## Install
 
+### Homebrew
+
+```sh
+brew install firedev/tap/threefinger
+brew services start threefinger
+```
+
+### Installer script
+
 Apple Silicon, no build tools needed:
 
 ```sh
@@ -74,6 +83,10 @@ launchctl kickstart -k gui/$UID/com.firedev.threefinger
 ```
 
 Run `threefinger -v` in a terminal to watch gestures live while tuning (stop the daemon first, two instances double-fire).
+
+### iTerm2
+
+iTerm2 ships its own bindings on the same keys: ⌥⌘← is **Move Tab Left**, so a swipe drags the tab around instead of switching to it. Settings → Keys → Key Bindings: find the ⌥⌘←/⌥⌘→ entries and re-bind them to **Previous Tab** / **Next Tab** (or delete them — the swipe then falls through to the default tab switching).
 
 ## Uninstall
 
