@@ -31,23 +31,40 @@ Then swipe.
 
 More: [firedev.com/projects/threefinger](https://firedev.com/projects/threefinger/)
 
-<details>
-<summary>Config, build, uninstall</summary>
+## Config
 
-Config: `~/.config/threefinger.json` (Karabiner-style). Defaults map left/right to tab switching. Any shortcut works. Restart after edits:
+Edit `~/.config/threefinger.json` (Karabiner-style). By default, left/right change tabs; you can map any shortcut. Restart after editing:
 
 ```sh
 brew services restart threefinger
-# or
+# or, if you used the curl installer:
 launchctl kickstart -k gui/$UID/com.firedev.threefinger
 ```
 
-Build from source: `git clone https://github.com/firedev/threefinger && cd threefinger && make install`
+## Build from source
 
-Uninstall: `curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/uninstall.sh | bash` or `make uninstall` / `brew uninstall threefinger`
+```sh
+git clone https://github.com/firedev/threefinger && cd threefinger
+make install
+```
 
-Don’t run Homebrew and the curl installer together — two daemons double-fire. After upgrades, remove (−) and re-add Accessibility for the new binary.
+## Uninstall
 
-Open source, MIT. Tiny Swift tool on MultitouchSupport — a one-feature BetterTouchTool replacement.
+```sh
+# curl install
+curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/uninstall.sh | bash
 
-</details>
+# Homebrew
+brew uninstall threefinger
+
+# from a clone
+make uninstall
+```
+
+> Use **either** Homebrew **or** the curl installer — not both. Two daemons will fight over the same swipe.
+
+> After every upgrade, remove threefinger from Accessibility (**−**) and add the new binary again. Toggling the switch is not enough.
+
+## License
+
+MIT. Tiny Swift tool on MultitouchSupport — a one-feature BetterTouchTool replacement.
