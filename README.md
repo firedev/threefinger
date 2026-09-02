@@ -2,138 +2,52 @@
 
 Three-finger swipe on the Mac trackpad → switch tabs.
 
-That’s the point. Left/right posts `Ctrl-Shift-Tab` / `Ctrl-Tab` so Safari, Chrome, Firefox, and most tabbed apps move one tab over. One action per swipe; re-arms when fingers lift.
-
-Optional: map any other shortcut in the config, or keep Mission Control / App Exposé on three-finger up/down for a fuller set.
+Left/right posts `Ctrl-Shift-Tab` / `Ctrl-Tab`. Works in Safari, Chrome, Firefox, and most tabbed apps.
 
 ![threefinger demo](demo.gif)
 
-**Why:** BetterTouchTool is paid, and nothing open source maps trackpad gestures to keyboard shortcuts. This does that one job — switch tabs — in ~90 lines of Swift on the private `MultitouchSupport.framework`.
-
-## Install
-
-### Homebrew
-
-```sh
-brew install firedev/tap/threefinger
-brew services start threefinger
-```
-
-### Installer script
-
-Apple Silicon, no build tools needed:
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/install.sh | bash
-```
-
-Downloads the latest [release](https://github.com/firedev/threefinger/releases) binary into `~/.local/bin`, installs `~/Library/LaunchAgents/com.firedev.threefinger.plist`, and loads the daemon (autostart + keep-alive). Re-running updates cleanly.
-
-Don't download the release tar with a browser — the binary is ad-hoc signed, not notarized, and a browser download gets a Gatekeeper quarantine that blocks it. `curl`/`gh` downloads carry no quarantine.
-
-### Build from source
-
-```sh
-git clone https://github.com/firedev/threefinger && cd threefinger
-make install   # builds, copies binary, loads the launchd agent
-```
-
-Installs to `/usr/local/bin` (or `~/.local/bin` if that's not writable) + the same LaunchAgent. Re-running `make install` reinstalls cleanly.
-
-## After install
-
-Two quick things, then swipe:
-
-1. **Let threefinger work.** macOS blocks background apps from reading the trackpad and typing keys until you allow it. Run:
-
-   ```sh
-   threefinger --check --open
-   ```
-
-   If a grant is missing, that opens **Accessibility** / **Input Monitoring** — turn them on for `threefinger` itself, not Terminal. Then run the same command again.
-
-2. **Give the swipe back.** When permissions are ok, `--check --open` opens **Trackpad → More Gestures**. Set **Swipe between full-screen applications** to **Swipe Left or Right with Four Fingers**.  
-   **Swipe between pages → Off** is optional, but nicer if Safari also grabs the gesture.
-
-Then three fingers left/right switch tabs.
-
-Optional: leave **Mission Control** and **App Exposé** on three fingers for a fuller set:
+Keep **Mission Control** and **App Exposé** on three fingers and you get a full set:
 
 | Three fingers | Does |
 | --- | --- |
 | ← / → | Previous / next tab |
-| ↑ | All windows (Mission Control) |
-| ↓ | Windows for this app (App Exposé) |
+| ↑ | All windows |
+| ↓ | Windows for this app |
+
+## Setup
+
+1. Install and allow threefinger when Settings asks (Accessibility + Input Monitoring — for threefinger, not Terminal):
+
+   ```sh
+   curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/install.sh | bash
+   threefinger --check --open
+   ```
+
+   Or: `brew install firedev/tap/threefinger && brew services start threefinger`
+
+2. In **Trackpad → More Gestures**, set **Swipe between full-screen applications** to **Swipe Left or Right with Four Fingers** so macOS doesn’t steal the horizontal swipe. **Swipe between pages → Off** is optional.
+
+Then swipe.
+
+More: [firedev.com/projects/threefinger](https://firedev.com/projects/threefinger/)
 
 <details>
-<summary>Paths, upgrades, troubleshooting</summary>
+<summary>Config, build, uninstall</summary>
 
-| Permission | Without it |
-| --- | --- |
-| Accessibility | Swipes detected, keys never post |
-| Input Monitoring | No trackpad devices seen |
-
-Add the binary via **+** → **Cmd-Shift-G** → paste path → **Open** → enable:
-
-| Install | Path |
-| --- | --- |
-| Homebrew | `/opt/homebrew/opt/threefinger/bin/threefinger` |
-| curl installer | `~/.local/bin/threefinger` |
-
-After every upgrade the binary changes — remove the old entry (**−**), then re-add. Toggling the switch is not enough.
-
-Don’t run Homebrew and the curl/`make install` agent together — both fire on one swipe and tabs look broken. `threefinger --check` warns if it sees more than one copy.
-
-`threefinger --check` — status only (exit 1 if anything missing).
-
-</details>
-
-## Configure
-
-Config lives in `~/.config/threefinger.json`, Karabiner-style. Written with defaults on first run:
-
-```json
-{
-  "description": "three-finger swipe → switch tabs",
-  "manipulators": [
-    {
-      "from": { "gesture": "three_finger_swipe_left" },
-      "to": [
-        { "key_code": "tab", "modifiers": ["left_control", "left_shift"] }
-      ],
-      "type": "basic"
-    },
-    {
-      "from": { "gesture": "three_finger_swipe_right" },
-      "to": [
-        { "key_code": "tab", "modifiers": ["left_control"] }
-      ],
-      "type": "basic"
-    }
-  ]
-}
-```
-
-- **Gestures** (`from.gesture`): `three_finger_swipe_left` / `right` / `up` / `down`. Unmapped gestures do nothing.
-- **`to`**: array of `{key_code, modifiers}`, posted in order. Karabiner key names: `a`–`z`, `0`–`9`, `left_arrow`/`right_arrow`/`up_arrow`/`down_arrow`, `return_or_enter`, `escape`, `tab`, `spacebar`, `delete_or_backspace`, `page_up`/`page_down`, `home`/`end`, `f1`–`f12`. Modifiers: `command`, `option`, `shift`, `control` (with or without `left_`/`right_` prefix — macOS posts them the same).
-- **`threshold`**: optional top-level key, fraction of trackpad width (default `0.08`).
-
-Config is read once at startup. After editing, restart the daemon:
+Config: `~/.config/threefinger.json` (Karabiner-style). Defaults map left/right to tab switching. Any shortcut works. Restart after edits:
 
 ```sh
+brew services restart threefinger
+# or
 launchctl kickstart -k gui/$UID/com.firedev.threefinger
 ```
 
-Run `threefinger -v` in a terminal to watch gestures live while tuning (stop the daemon first — two instances double-fire).
+Build from source: `git clone https://github.com/firedev/threefinger && cd threefinger && make install`
 
-## Uninstall
+Uninstall: `curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/uninstall.sh | bash` or `make uninstall` / `brew uninstall threefinger`
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/uninstall.sh | bash
-```
+Don’t run Homebrew and the curl installer together — two daemons double-fire. After upgrades, remove (−) and re-add Accessibility for the new binary.
 
-Or from a clone: `make uninstall`.
+Open source, MIT. Tiny Swift tool on MultitouchSupport — a one-feature BetterTouchTool replacement.
 
-## License
-
-MIT
+</details>
