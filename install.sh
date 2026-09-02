@@ -48,9 +48,9 @@ fi
 cat <<'EOF'
   2. Trackpad → More Gestures
        Swipe between full-screen applications → Swipe Left or Right with Four Fingers
-       Keep Mission Control / App Exposé on three fingers
        Swipe between pages → Off  (optional)
 
-Then three fingers: ↑ all windows · ↓ this app · ←/→ tabs
+Then three fingers left/right switch tabs.
+Optional: keep Mission Control / App Exposé on three fingers (↑ all windows · ↓ this app).
 
 EOF

@@ -1,12 +1,14 @@
 # threefinger
 
-Three-finger swipe on the Mac trackpad → switch tabs. Or the shortcut of your choice.
+Three-finger swipe on the Mac trackpad → switch tabs.
 
-Default left/right posts `Ctrl-Shift-Tab` / `Ctrl-Tab`. Pair with Mission Control and App Exposé on three-finger up/down for a full set — all windows, this app’s windows, previous tab, next tab. Tiny open-source Swift tool; one action per swipe, re-arms when fingers lift.
+That’s the point. Left/right posts `Ctrl-Shift-Tab` / `Ctrl-Tab` so Safari, Chrome, Firefox, and most tabbed apps move one tab over. One action per swipe; re-arms when fingers lift.
+
+Optional: map any other shortcut in the config, or keep Mission Control / App Exposé on three-finger up/down for a fuller set.
 
 ![threefinger demo](demo.gif)
 
-**Why:** BetterTouchTool is paid, and nothing open source maps trackpad gestures to keyboard shortcuts. This does exactly that, in ~90 lines of Swift on the private `MultitouchSupport.framework`.
+**Why:** BetterTouchTool is paid, and nothing open source maps trackpad gestures to keyboard shortcuts. This does that one job — switch tabs — in ~90 lines of Swift on the private `MultitouchSupport.framework`.
 
 ## Install
 
@@ -53,14 +55,15 @@ Two quick things, then swipe:
 2. **Give the swipe back.** macOS uses the same three-finger ←/→ for Spaces. In **Trackpad → More Gestures** set **Swipe between full-screen applications** to **Swipe Left or Right with Four Fingers**.  
    **Swipe between pages → Off** is optional, but nicer if Safari also grabs the gesture.
 
-Leave **Mission Control** and **App Exposé** on three fingers. Then you get a clean set:
+Then three fingers left/right switch tabs.
+
+Optional: leave **Mission Control** and **App Exposé** on three fingers for a fuller set:
 
 | Three fingers | Does |
 | --- | --- |
+| ← / → | Previous / next tab |
 | ↑ | All windows (Mission Control) |
 | ↓ | Windows for this app (App Exposé) |
-| ← | Previous tab |
-| → | Next tab |
 
 <details>
 <summary>Paths, upgrades, troubleshooting</summary>
