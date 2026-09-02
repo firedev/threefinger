@@ -1,6 +1,8 @@
 # threefinger
 
-Three-finger swipe on the Mac trackpad → keyboard shortcut. Default: left/right switches browser tabs (`Ctrl-Shift-Tab` / `Ctrl-Tab`). Pair with Mission Control and App Exposé on three-finger up/down for a full set — all windows, this app’s windows, previous tab, next tab. Tiny open-source Swift tool; one action per swipe, re-arms when fingers lift.
+Three-finger swipe on the Mac trackpad → switch tabs. Or the shortcut of your choice.
+
+Default left/right posts `Ctrl-Shift-Tab` / `Ctrl-Tab`. Pair with Mission Control and App Exposé on three-finger up/down for a full set — all windows, this app’s windows, previous tab, next tab. Tiny open-source Swift tool; one action per swipe, re-arms when fingers lift.
 
 ![threefinger demo](demo.gif)
 
