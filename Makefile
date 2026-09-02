@@ -25,8 +25,8 @@ install: threefinger
 	@printf '     (after every reinstall: remove (−) first, then re-add;\n'
 	@printf '      toggling the switch is not enough)\n'
 	@printf '  2. Trackpad → More Gestures (opened when Accessibility is granted)\n'
-	@printf '       Swipe between pages                     → Off\n'
-	@printf '       Swipe between full-screen applications  → Swipe Left or Right with Four Fingers\n\n'
+	@printf '       Swipe between full-screen applications  → Swipe Left or Right with Four Fingers  (required)\n'
+	@printf '       Swipe between pages                     → Off  (optional, recommended)\n\n'
 	@printf 'Default: 3-finger swipe ←/→ switches tabs (Ctrl-Shift-Tab / Ctrl-Tab)\n'
 	@printf 'Config:  ~/.config/threefinger.json\n\n'
 
