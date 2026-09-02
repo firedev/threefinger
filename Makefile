@@ -10,6 +10,8 @@ run: threefinger
 
 install: threefinger
 	-launchctl bootout gui/$$(id -u)/$(LABEL) 2>/dev/null
+	-launchctl bootout gui/$$(id -u)/homebrew.mxcl.threefinger 2>/dev/null
+	-brew services stop threefinger 2>/dev/null
 	mkdir -p $(BINDIR)
 	cp threefinger $(BINDIR)/threefinger
 	sed 's|/usr/local/bin|$(BINDIR)|' $(LABEL).plist > $(PLIST)

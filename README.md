@@ -63,6 +63,8 @@ threefinger --check --open # status + open the relevant Settings panes
 
 Then 3-finger swipe ←/→ to switch tabs (`Ctrl-Shift-Tab` / `Ctrl-Tab`).
 
+**One daemon only.** Don’t run Homebrew and the curl/`make install` agent together — both fire on the same swipe and tabs look broken even when Accessibility is ok. `threefinger --check` warns if it sees more than one copy.
+
 ## Configure
 
 Config lives in `~/.config/threefinger.json`, Karabiner-style. Written with defaults on first run:
@@ -99,7 +101,7 @@ Config is read once at startup. After editing, restart the daemon:
 launchctl kickstart -k gui/$UID/com.firedev.threefinger
 ```
 
-Run `threefinger -v` in a terminal to watch gestures live while tuning (stop the daemon first, two instances double-fire).
+Run `threefinger -v` in a terminal to watch gestures live while tuning (stop the daemon first — two instances double-fire).
 
 ## Uninstall
 

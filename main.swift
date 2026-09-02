@@ -77,8 +77,10 @@ func selectTrackpadMoreGesturesTab() -> Bool {
 // ── --check [--open]: permission status for installers / debugging ──────
 if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("-c") {
     let doOpen = CommandLine.arguments.contains("--open")
-    let bin = CommandLine.arguments[0]
+    let bin = URL(fileURLWithPath: CommandLine.arguments[0]).standardizedFileURL.path
     var ok = true
+
+    print("Binary:           \(bin)")
 
     let ax = AXIsProcessTrusted()
     print("Accessibility:    \(ax ? "ok" : "MISSING — keys won't post")")
@@ -95,6 +97,50 @@ if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("
         ok = false
         print("Input Monitoring: MISSING — no multitouch devices (or no trackpad)")
         print("  → Privacy & Security → Input Monitoring → + → \(bin)")
+    }
+
+    // Two daemons (e.g. brew services + make install) both fire on one swipe —
+    // often looks like "Accessibility ok but tabs don't switch".
+    let selfPID = ProcessInfo.processInfo.processIdentifier
+    var daemons = [(pid: Int32, path: String)]()
+    let task = Process()
+    task.executableURL = URL(fileURLWithPath: "/bin/ps")
+    task.arguments = ["-axo", "pid=,command="]
+    let pipe = Pipe()
+    task.standardOutput = pipe
+    task.standardError = FileHandle.nullDevice
+    do {
+        try task.run()
+        // Read to EOF before/while process exits — wait-then-read deadlocks the pipe.
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        task.waitUntilExit()
+        let out = String(data: data, encoding: .utf8) ?? ""
+        for line in out.split(separator: "\n") {
+            let s = line.trimmingCharacters(in: .whitespaces)
+            guard let sp = s.firstIndex(of: " ") else { continue }
+            guard let pid = Int32(s[..<sp]), pid != selfPID else { continue }
+            let cmd = String(s[s.index(after: sp)...])
+            let path = cmd.split(separator: " ").first.map(String.init) ?? cmd
+            // Exact binary name — ignore threefinger-check, shell lines, etc.
+            guard URL(fileURLWithPath: path).lastPathComponent == "threefinger" else { continue }
+            daemons.append((pid, path))
+        }
+    } catch {
+        print("Daemon:           could not list processes (\(error.localizedDescription))")
+    }
+    if daemons.isEmpty {
+        print("Daemon:           not running (start with: brew services start threefinger)")
+        ok = false
+    } else if daemons.count == 1 {
+        print("Daemon:           ok (pid \(daemons[0].pid) — \(daemons[0].path))")
+        if URL(fileURLWithPath: daemons[0].path).standardizedFileURL.path != bin {
+            print("  ⚠ daemon path differs from this --check binary — grant Accessibility to the daemon path")
+        }
+    } else {
+        ok = false
+        print("Daemon:           \(daemons.count) copies running — swipes double-fire and look broken")
+        for d in daemons { print("  pid \(d.pid)  \(d.path)") }
+        print("  → keep one installer only (brew XOR curl/make install), stop the other")
     }
 
     if doOpen {

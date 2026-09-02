@@ -11,7 +11,10 @@ AGENTS="${AGENTS:-$HOME/Library/LaunchAgents}"
 tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
 curl -fsSL "https://github.com/$REPO/releases/latest/download/threefinger-arm64.tar.gz" | tar xz -C "$tmp"
 
+# One daemon only — stop our agent and any Homebrew service copy.
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
+launchctl bootout "gui/$(id -u)/homebrew.mxcl.threefinger" 2>/dev/null || true
+brew services stop threefinger 2>/dev/null || true
 mkdir -p "$BINDIR" "$AGENTS"
 if cmp -s "$tmp/threefinger" "$BINDIR/threefinger"; then
     replaced=0
