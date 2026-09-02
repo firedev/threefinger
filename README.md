@@ -51,7 +51,14 @@ Two quick things, then swipe:
 2. **Give the swipe back.** macOS uses the same three-finger ←/→ for Spaces. In **Trackpad → More Gestures** set **Swipe between full-screen applications** to **Swipe Left or Right with Four Fingers**.  
    **Swipe between pages → Off** is optional, but nicer if Safari also grabs the gesture.
 
-Then three fingers left/right switches tabs (`Ctrl-Shift-Tab` / `Ctrl-Tab`).
+Leave **Mission Control** and **App Exposé** on three fingers. Then you get a clean set:
+
+| Three fingers | Does |
+| --- | --- |
+| ↑ | All windows (Mission Control) |
+| ↓ | Windows for this app (App Exposé) |
+| ← | Previous tab |
+| → | Next tab |
 
 <details>
 <summary>Paths, upgrades, troubleshooting</summary>

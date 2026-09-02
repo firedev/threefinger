@@ -25,8 +25,9 @@ install: threefinger
 	@printf '     After reinstall: remove (−), then re-add $(BINDIR)/threefinger\n'
 	@printf '  2. Trackpad → More Gestures\n'
 	@printf '       Swipe between full-screen applications → Swipe Left or Right with Four Fingers\n'
+	@printf '       Keep Mission Control / App Exposé on three fingers\n'
 	@printf '       Swipe between pages → Off  (optional)\n\n'
-	@printf 'Then three fingers left/right switches tabs.\n\n'
+	@printf 'Then three fingers: up all windows · down this app · left/right tabs\n\n'
 
 uninstall:
 	-launchctl bootout gui/$$(id -u)/$(LABEL) 2>/dev/null
