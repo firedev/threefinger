@@ -58,8 +58,8 @@ threefinger --check --open # status + open the relevant Settings panes
 
    | More Gestures | Set to |
    | --- | --- |
-   | Swipe between pages | Off |
-   | Swipe between full-screen applications | Swipe Left or Right with Four Fingers |
+   | Swipe between full-screen applications | **Swipe Left or Right with Four Fingers** (required) |
+   | Swipe between pages | Off (optional, recommended) |
 
 Then 3-finger swipe ←/→ to switch tabs (`Ctrl-Shift-Tab` / `Ctrl-Tab`).
 

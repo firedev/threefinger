@@ -47,8 +47,8 @@ EOF
 fi
 cat <<'EOF'
   2. Trackpad → More Gestures (opened when Accessibility is granted)
-       Swipe between pages                     → Off
-       Swipe between full-screen applications  → Swipe Left or Right with Four Fingers
+       Swipe between full-screen applications  → Swipe Left or Right with Four Fingers  (required)
+       Swipe between pages                     → Off  (optional, recommended)
 
 Default: 3-finger swipe ←/→ switches tabs (Ctrl-Shift-Tab / Ctrl-Tab)
 Config:  ~/.config/threefinger.json
