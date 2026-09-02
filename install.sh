@@ -50,7 +50,7 @@ cat <<'EOF'
        Swipe between full-screen applications → Swipe Left or Right with Four Fingers
        Swipe between pages → Off  (optional)
 
-Then three fingers left/right switch tabs.
+Then three fingers left/right change tabs.
 Optional: keep Mission Control / App Exposé on three fingers (↑ all windows · ↓ this app).
 
 EOF

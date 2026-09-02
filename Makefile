@@ -26,7 +26,7 @@ install: threefinger
 	@printf '  2. Trackpad → More Gestures\n'
 	@printf '       Swipe between full-screen applications → Swipe Left or Right with Four Fingers\n'
 	@printf '       Swipe between pages → Off  (optional)\n\n'
-	@printf 'Then three fingers left/right switch tabs.\n'
+	@printf 'Then three fingers left/right change tabs.\n'
 	@printf 'Optional: keep Mission Control / App Exposé on three fingers (up all windows · down this app).\n\n'
 
 uninstall:

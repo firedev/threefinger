@@ -1,6 +1,6 @@
 # threefinger
 
-Three-finger swipe on the Mac trackpad → switch tabs.
+Swipe with three fingers on the Mac trackpad to change tabs.
 
 Left/right posts `Ctrl-Shift-Tab` / `Ctrl-Tab`. Works in Safari, Chrome, Firefox, and most tabbed apps.
 
