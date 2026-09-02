@@ -38,44 +38,43 @@ Installs to `/usr/local/bin` (or `~/.local/bin` if that's not writable) + the sa
 
 ## After install
 
-The installer runs `threefinger --check --open`: prints permission status and opens the right System Settings panes (Accessibility / Input Monitoring if missing, plus **Trackpad → More Gestures**). macOS has no URL for that tab, so the binary opens Trackpad and selects More Gestures via Accessibility.
+Two quick things, then swipe:
 
-```sh
-threefinger --check        # status only (exit 1 if anything missing)
-threefinger --check --open # status + open the relevant Settings panes
-```
+1. **Let threefinger work.** macOS blocks background apps from reading the trackpad and typing keys until you allow it. Run:
 
-1. **Permissions** — grant these to the **installed `threefinger` binary**, not Terminal:
+   ```sh
+   threefinger --check --open
+   ```
 
-   | Permission | Without it |
-   | --- | --- |
-   | Accessibility | Swipes are detected, but keys never post |
-   | Input Monitoring | No multitouch devices show up |
+   Turn on **Accessibility** and **Input Monitoring** for `threefinger` when Settings asks (or opens those panes). Not for Terminal — for threefinger itself.
 
-   How:
+2. **Give the swipe back.** macOS uses the same three-finger ←/→ for Spaces. In **Trackpad → More Gestures** set **Swipe between full-screen applications** to **Swipe Left or Right with Four Fingers**.  
+   **Swipe between pages → Off** is optional, but nicer if Safari also grabs the gesture.
 
-   1. Open **System Settings → Privacy & Security → Accessibility**  
-      (`threefinger --check --open` opens this pane when the grant is missing)
-   2. Click **+**, press **Cmd-Shift-G**, paste the binary path, click **Open**, enable the checkbox
-   3. Repeat under **Privacy & Security → Input Monitoring**
+Then three fingers left/right switches tabs (`Ctrl-Shift-Tab` / `Ctrl-Tab`).
 
-   | Install | Binary to add |
-   | --- | --- |
-   | Homebrew | `/opt/homebrew/opt/threefinger/bin/threefinger` |
-   | curl installer | `~/.local/bin/threefinger` |
+<details>
+<summary>Paths, upgrades, troubleshooting</summary>
 
-   > After every upgrade the binary changes — remove the old entry (**−**), then re-add. Toggling the switch is not enough.
+| Permission | Without it |
+| --- | --- |
+| Accessibility | Swipes detected, keys never post |
+| Input Monitoring | No trackpad devices seen |
 
-2. **Free the trackpad gesture** — macOS's own 3-finger ←/→ swipe grabs the same motion. With Accessibility granted, `--check --open` lands on **Trackpad → More Gestures**; set:
+Add the binary via **+** → **Cmd-Shift-G** → paste path → **Open** → enable:
 
-   | More Gestures | Set to |
-   | --- | --- |
-   | Swipe between full-screen applications | **Swipe Left or Right with Four Fingers** (required) |
-   | Swipe between pages | Off (optional, recommended) |
+| Install | Path |
+| --- | --- |
+| Homebrew | `/opt/homebrew/opt/threefinger/bin/threefinger` |
+| curl installer | `~/.local/bin/threefinger` |
 
-Then 3-finger swipe ←/→ to switch tabs (`Ctrl-Shift-Tab` / `Ctrl-Tab`).
+After every upgrade the binary changes — remove the old entry (**−**), then re-add. Toggling the switch is not enough.
 
-**One daemon only.** Don’t run Homebrew and the curl/`make install` agent together — both fire on the same swipe and tabs look broken even when Accessibility is ok. `threefinger --check` warns if it sees more than one copy.
+Don’t run Homebrew and the curl/`make install` agent together — both fire on one swipe and tabs look broken. `threefinger --check` warns if it sees more than one copy.
+
+`threefinger --check` — status only (exit 1 if anything missing).
+
+</details>
 
 ## Configure
 

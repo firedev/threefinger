@@ -36,24 +36,20 @@ EOF
 cat <<EOF
 
 Next:
-  1. If Accessibility / Input Monitoring is MISSING above:
-       System Settings → Privacy & Security → Accessibility → +
-       → Cmd-Shift-G → paste:
-         $BINDIR/threefinger
-       → Open → enable checkbox. Same under Input Monitoring.
+  1. Allow threefinger in System Settings (Accessibility + Input Monitoring)
+     — for threefinger itself, not Terminal.
 EOF
 if [ "$replaced" = 1 ]; then
     cat <<EOF
-     (binary was replaced — remove the old entry (−) first, then re-add;
-      toggling the switch is not enough)
+     Binary was replaced: remove the old entry (−), then add again
+     ($BINDIR/threefinger). Toggling is not enough.
 EOF
 fi
 cat <<'EOF'
-  2. Trackpad → More Gestures (opened when Accessibility is granted)
-       Swipe between full-screen applications  → Swipe Left or Right with Four Fingers  (required)
-       Swipe between pages                     → Off  (optional, recommended)
+  2. Trackpad → More Gestures
+       Swipe between full-screen applications → Swipe Left or Right with Four Fingers
+       Swipe between pages → Off  (optional)
 
-Default: 3-finger swipe ←/→ switches tabs (Ctrl-Shift-Tab / Ctrl-Tab)
-Config:  ~/.config/threefinger.json
+Then three fingers left/right switches tabs.
 
 EOF
