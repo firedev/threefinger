@@ -20,18 +20,13 @@ install: threefinger
 	@printf 'Permissions:\n'
 	@$(BINDIR)/threefinger --check --open || true
 	@printf '\nNext:\n'
-	@printf '  1. If Accessibility / Input Monitoring is MISSING above:\n'
-	@printf '       System Settings → Privacy & Security → Accessibility → +\n'
-	@printf '       → Cmd-Shift-G → paste:\n'
-	@printf '         $(BINDIR)/threefinger\n'
-	@printf '       → Open → enable checkbox. Same under Input Monitoring.\n'
-	@printf '     (after every reinstall: remove (−) first, then re-add;\n'
-	@printf '      toggling the switch is not enough)\n'
-	@printf '  2. Trackpad → More Gestures (opened when Accessibility is granted)\n'
-	@printf '       Swipe between full-screen applications  → Swipe Left or Right with Four Fingers  (required)\n'
-	@printf '       Swipe between pages                     → Off  (optional, recommended)\n\n'
-	@printf 'Default: 3-finger swipe ←/→ switches tabs (Ctrl-Shift-Tab / Ctrl-Tab)\n'
-	@printf 'Config:  ~/.config/threefinger.json\n\n'
+	@printf '  1. Allow threefinger in System Settings (Accessibility + Input Monitoring)\n'
+	@printf '     — for threefinger itself, not Terminal.\n'
+	@printf '     After reinstall: remove (−), then re-add $(BINDIR)/threefinger\n'
+	@printf '  2. Trackpad → More Gestures\n'
+	@printf '       Swipe between full-screen applications → Swipe Left or Right with Four Fingers\n'
+	@printf '       Swipe between pages → Off  (optional)\n\n'
+	@printf 'Then three fingers left/right switches tabs.\n\n'
 
 uninstall:
 	-launchctl bootout gui/$$(id -u)/$(LABEL) 2>/dev/null
