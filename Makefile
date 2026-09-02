@@ -20,8 +20,11 @@ install: threefinger
 	@printf 'Permissions:\n'
 	@$(BINDIR)/threefinger --check --open || true
 	@printf '\nNext:\n'
-	@printf '  1. If Accessibility / Input Monitoring is MISSING above — add:\n'
-	@printf '       $(BINDIR)/threefinger\n'
+	@printf '  1. If Accessibility / Input Monitoring is MISSING above:\n'
+	@printf '       System Settings → Privacy & Security → Accessibility → +\n'
+	@printf '       → Cmd-Shift-G → paste:\n'
+	@printf '         $(BINDIR)/threefinger\n'
+	@printf '       → Open → enable checkbox. Same under Input Monitoring.\n'
 	@printf '     (after every reinstall: remove (−) first, then re-add;\n'
 	@printf '      toggling the switch is not enough)\n'
 	@printf '  2. Trackpad → More Gestures (opened when Accessibility is granted)\n'

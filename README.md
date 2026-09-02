@@ -45,12 +45,24 @@ threefinger --check        # status only (exit 1 if anything missing)
 threefinger --check --open # status + open the relevant Settings panes
 ```
 
-1. **Permissions** — grant these to the **installed binary** (not your terminal):
+1. **Permissions** — grant these to the **installed `threefinger` binary**, not Terminal:
 
    | Permission | Without it |
    | --- | --- |
    | Accessibility | Swipes are detected, but keys never post |
    | Input Monitoring | No multitouch devices show up |
+
+   How:
+
+   1. Open **System Settings → Privacy & Security → Accessibility**  
+      (`threefinger --check --open` opens this pane when the grant is missing)
+   2. Click **+**, press **Cmd-Shift-G**, paste the binary path, click **Open**, enable the checkbox
+   3. Repeat under **Privacy & Security → Input Monitoring**
+
+   | Install | Binary to add |
+   | --- | --- |
+   | Homebrew | `/opt/homebrew/opt/threefinger/bin/threefinger` |
+   | curl installer | `~/.local/bin/threefinger` |
 
    > After every upgrade the binary changes — remove the old entry (**−**), then re-add. Toggling the switch is not enough.
 
