@@ -145,13 +145,30 @@ if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("
     }
 
     if doOpen {
-        // Trackpad has no More Gestures URL — open pane and AX-click the tab when possible.
-        let tabbed = selectTrackpadMoreGesturesTab()
-        print(tabbed
-            ? "Opened Trackpad → More Gestures"
-            : "Opened Trackpad (couldn’t select More Gestures — grant Accessibility, then re-run --check --open)")
-        if n == nil || n == 0 { openPrefs(PREFS_INPUT) }
-        if !ax { openPrefs(PREFS_AX) } // land on the most critical missing grant
+        let needInput = n == nil || n == 0
+        // Opening Trackpad first steals System Settings away from Privacy panes
+        // (async). If grants are missing, open those and stop — re-run for gestures.
+        if !ax || needInput {
+            if needInput {
+                openPrefs(PREFS_INPUT)
+                usleep(300_000)
+            }
+            if !ax {
+                openPrefs(PREFS_AX)
+                // Fallback deep link used on older macOS builds.
+                usleep(200_000)
+                openPrefs("x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")
+            }
+            var parts = [String]()
+            if !ax { parts.append("Accessibility") }
+            if needInput { parts.append("Input Monitoring") }
+            print("Opened \(parts.joined(separator: " + ")) — grant \(bin), then re-run --check --open for More Gestures")
+        } else {
+            let tabbed = selectTrackpadMoreGesturesTab()
+            print(tabbed
+                ? "Opened Trackpad → More Gestures"
+                : "Opened Trackpad (couldn’t select More Gestures)")
+        }
     }
     exit(ok ? 0 : 1)
 }
