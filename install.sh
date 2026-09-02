@@ -22,9 +22,32 @@ fi
 sed "s|/usr/local/bin|$BINDIR|" "$tmp/$LABEL.plist" > "$AGENTS/$LABEL.plist"
 launchctl bootstrap "gui/$(id -u)" "$AGENTS/$LABEL.plist"
 
-echo ">>> Installed and loaded ($BINDIR/threefinger)."
+cat <<EOF
+
+Installed: $BINDIR/threefinger
+
+Permissions:
+EOF
+"$BINDIR/threefinger" --check --open || true
+
+cat <<EOF
+
+Next:
+  1. If Accessibility / Input Monitoring is MISSING above — add:
+       $BINDIR/threefinger
+EOF
 if [ "$replaced" = 1 ]; then
-    echo ">>> Binary was replaced, so its Accessibility grant is void: System Settings → Privacy & Security → Accessibility → remove threefinger (−), then + → $BINDIR/threefinger. Toggling the switch is not enough."
-else
-    echo ">>> Binary unchanged — existing Accessibility grant still valid."
+    cat <<EOF
+     (binary was replaced — remove the old entry (−) first, then re-add;
+      toggling the switch is not enough)
+EOF
 fi
+cat <<'EOF'
+  2. Trackpad → More Gestures (opened when Accessibility is granted)
+       Swipe between pages                     → Off
+       Swipe between full-screen applications  → Swipe Left or Right with Four Fingers
+
+Default: 3-finger swipe ←/→ switches tabs (⌃⇧Tab / ⌃Tab)
+Config:  ~/.config/threefinger.json
+
+EOF
