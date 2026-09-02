@@ -36,8 +36,11 @@ EOF
 cat <<EOF
 
 Next:
-  1. If Accessibility / Input Monitoring is MISSING above — add:
-       $BINDIR/threefinger
+  1. If Accessibility / Input Monitoring is MISSING above:
+       System Settings → Privacy & Security → Accessibility → +
+       → Cmd-Shift-G → paste:
+         $BINDIR/threefinger
+       → Open → enable checkbox. Same under Input Monitoring.
 EOF
 if [ "$replaced" = 1 ]; then
     cat <<EOF
