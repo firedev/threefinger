@@ -1,6 +1,6 @@
 # threefinger
 
-Three-finger horizontal swipe on the macOS trackpad → any keyboard shortcut. A tiny single-file replacement for that one BetterTouchTool feature. Default: swipe left posts `Ctrl-Shift-Tab`, swipe right posts `Ctrl-Tab` (previous/next tab — works in Safari, Chrome, Firefox, and most tabbed apps). One action per swipe; re-arms when all fingers lift.
+Three-finger swipe on the Mac trackpad → keyboard shortcut. Default: left/right switches browser tabs (`Ctrl-Shift-Tab` / `Ctrl-Tab`). Pair with Mission Control and App Exposé on three-finger up/down for a full set — all windows, this app’s windows, previous tab, next tab. Tiny open-source Swift tool; one action per swipe, re-arms when fingers lift.
 
 ![threefinger demo](demo.gif)
 
