@@ -5,6 +5,110 @@ let verbose = CommandLine.arguments.contains("-v") || CommandLine.arguments.cont
 func log(_ s: String) { if verbose { print(s) } }
 func err(_ s: String) { FileHandle.standardError.write((s + "\n").data(using: .utf8)!) }
 
+let PREFS_AX = "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_Accessibility"
+let PREFS_INPUT = "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_ListenEvent"
+let PREFS_TRACKPAD = "x-apple.systempreferences:com.apple.Trackpad-Settings.extension"
+
+func openPrefs(_ url: String) {
+    if let u = URL(string: url) { NSWorkspace.shared.open(u) }
+}
+
+/// Multitouch device count, or nil if MultitouchSupport can't be loaded.
+func multitouchDeviceCount() -> Int? {
+    guard let lib = dlopen("/System/Library/PrivateFrameworks/MultitouchSupport.framework/MultitouchSupport", RTLD_NOW) else { return nil }
+    typealias CreateList = @convention(c) () -> Unmanaged<CFMutableArray>?
+    guard let sym = dlsym(lib, "MTDeviceCreateList") else { return nil }
+    let create = unsafeBitCast(sym, to: CreateList.self)
+    guard let list = create()?.takeUnretainedValue() else { return 0 }
+    return CFArrayGetCount(list)
+}
+
+// No URL anchor for the More Gestures tab — only trackpadTab exists — so open
+// Trackpad settings and AX-press the tab (needs Accessibility on this binary).
+func selectTrackpadMoreGesturesTab() -> Bool {
+    func axAttr(_ el: AXUIElement, _ name: String) -> AnyObject? {
+        var v: AnyObject?
+        AXUIElementCopyAttributeValue(el, name as CFString, &v)
+        return v
+    }
+    func axKids(_ el: AXUIElement) -> [AXUIElement] {
+        (axAttr(el, kAXChildrenAttribute as String) as? [AXUIElement]) ?? []
+    }
+    func axRole(_ el: AXUIElement) -> String {
+        (axAttr(el, kAXRoleAttribute as String) as? String) ?? ""
+    }
+    func axTitle(_ el: AXUIElement) -> String {
+        (axAttr(el, kAXTitleAttribute as String) as? String)
+            ?? (axAttr(el, kAXDescriptionAttribute as String) as? String)
+            ?? ""
+    }
+    func pressMoreGestures(in root: AXUIElement) -> Bool {
+        var q = [root]
+        var i = 0
+        while i < q.count && i < 3000 {
+            let el = q[i]; i += 1
+            if axRole(el) == kAXTabGroupRole as String {
+                let radios = axKids(el).filter { axRole($0) == kAXRadioButtonRole as String }
+                guard radios.count >= 3 else { q.append(contentsOf: axKids(el)); continue }
+                // Prefer title match; fall back to 3rd tab (More Gestures) for other locales.
+                let target = radios.first { axTitle($0) == "More Gestures" } ?? radios[2]
+                return AXUIElementPerformAction(target, kAXPressAction as CFString) == .success
+            }
+            q.append(contentsOf: axKids(el))
+        }
+        return false
+    }
+
+    openPrefs(PREFS_TRACKPAD)
+    let bundleIDs = ["com.apple.systempreferences", "com.apple.SystemSettings"]
+    for _ in 0..<25 { // ~3s for System Settings to build the pane
+        usleep(120_000)
+        for id in bundleIDs {
+            for app in NSRunningApplication.runningApplications(withBundleIdentifier: id) {
+                if pressMoreGestures(in: AXUIElementCreateApplication(app.processIdentifier)) {
+                    return true
+                }
+            }
+        }
+    }
+    return false
+}
+
+// ── --check [--open]: permission status for installers / debugging ──────
+if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("-c") {
+    let doOpen = CommandLine.arguments.contains("--open")
+    let bin = CommandLine.arguments[0]
+    var ok = true
+
+    let ax = AXIsProcessTrusted()
+    print("Accessibility:    \(ax ? "ok" : "MISSING — keys won't post")")
+    if !ax {
+        ok = false
+        print("  → Privacy & Security → Accessibility → + → \(bin)")
+        print("    (after replace: remove (−) first; toggling is not enough)")
+    }
+
+    let n = multitouchDeviceCount()
+    if let n, n > 0 {
+        print("Input Monitoring: ok (\(n) multitouch device\(n == 1 ? "" : "s"))")
+    } else {
+        ok = false
+        print("Input Monitoring: MISSING — no multitouch devices (or no trackpad)")
+        print("  → Privacy & Security → Input Monitoring → + → \(bin)")
+    }
+
+    if doOpen {
+        // Trackpad has no More Gestures URL — open pane and AX-click the tab when possible.
+        let tabbed = selectTrackpadMoreGesturesTab()
+        print(tabbed
+            ? "Opened Trackpad → More Gestures"
+            : "Opened Trackpad (couldn’t select More Gestures — grant Accessibility, then re-run --check --open)")
+        if n == nil || n == 0 { openPrefs(PREFS_INPUT) }
+        if !ax { openPrefs(PREFS_AX) } // land on the most critical missing grant
+    }
+    exit(ok ? 0 : 1)
+}
+
 // ── config: ~/.config/threefinger.json, Karabiner-style ────────────────
 // Written verbatim as the default config — literal template keeps key order
 // and 2-space indent exactly as Karabiner users expect.
@@ -15,14 +119,14 @@ let DEFAULT_CONFIG = """
     {
       "from": { "gesture": "three_finger_swipe_left" },
       "to": [
-        { "key_code": "left_arrow", "modifiers": ["left_command", "left_option"] }
+        { "key_code": "tab", "modifiers": ["left_control", "left_shift"] }
       ],
       "type": "basic"
     },
     {
       "from": { "gesture": "three_finger_swipe_right" },
       "to": [
-        { "key_code": "right_arrow", "modifiers": ["left_command", "left_option"] }
+        { "key_code": "tab", "modifiers": ["left_control"] }
       ],
       "type": "basic"
     }

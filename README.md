@@ -1,10 +1,8 @@
 # threefinger
 
-Three-finger horizontal swipe on the macOS trackpad → any keyboard shortcut. A tiny single-file replacement for that one BetterTouchTool feature. Default: swipe left posts ⌥⌘←, swipe right posts ⌥⌘→. One action per swipe; re-arms when all fingers lift.
+Three-finger horizontal swipe on the macOS trackpad → any keyboard shortcut. A tiny single-file replacement for that one BetterTouchTool feature. Default: swipe left posts ⌃⇧Tab, swipe right posts ⌃Tab (previous/next tab — works in Safari, Chrome, Firefox, and most tabbed apps). One action per swipe; re-arms when all fingers lift.
 
 ![threefinger demo](demo.gif)
-
-> ⚠️ macOS's own 3-finger gestures (Mission Control, Space switching, three-finger drag) grab the same swipes. System Settings → Trackpad → More Gestures: set them to four fingers or off.
 
 **Why:** BetterTouchTool is paid, and nothing open source maps trackpad gestures to keyboard shortcuts. This does exactly that, in ~90 lines of Swift on the private `MultitouchSupport.framework`.
 
@@ -38,13 +36,36 @@ make install   # builds, copies binary, loads the launchd agent
 
 Installs to `/usr/local/bin` (or `~/.local/bin` if that's not writable) + the same LaunchAgent. Re-running `make install` reinstalls cleanly.
 
-## Permissions (read this)
+## After install
 
-The **binary itself** needs Accessibility — not your terminal. Under launchd there is no terminal to inherit from: if swipes seem detected but nothing happens, this is why.
+The installer runs `threefinger --check --open`: prints permission status and opens the right System Settings panes (Accessibility / Input Monitoring if missing, plus **Trackpad → More Gestures**). macOS has no URL for that tab, so the binary opens Trackpad and selects More Gestures via Accessibility.
 
-System Settings → Privacy & Security → Accessibility → **+** → the installed `threefinger` binary. If touches don't register at all on recent macOS, add it under Input Monitoring too.
+```sh
+threefinger --check        # status only (exit 1 if anything missing)
+threefinger --check --open # status + open the relevant Settings panes
+```
 
-Accessibility is granted to the specific binary file: after an update replaces it, the grant can silently drop — swipes stop posting keys with no error. Re-grant in the same Settings pane.
+1. **Permissions** — grant them to the **binary**, not your terminal:
+
+   | Install method | Binary path |
+   | --- | --- |
+   | Homebrew | `$(brew --prefix)/bin/threefinger` |
+   | Installer script | `~/.local/bin/threefinger` |
+   | `make install` | `/usr/local/bin/threefinger` or `~/.local/bin/threefinger` |
+
+   - **Accessibility** — without it, swipes are detected but keys silently don't post  
+   - **Input Monitoring** — without it, no multitouch devices show up  
+
+   After every upgrade the binary changes — remove the old entry (**−**), then re-add. Toggling the switch is not enough.
+
+2. **Free the trackpad gesture** — macOS's own 3-finger ←/→ swipe grabs the same motion. With Accessibility granted, `--check --open` lands on **Trackpad → More Gestures**; set:
+
+   | More Gestures | Set to |
+   | --- | --- |
+   | Swipe between pages | Off |
+   | Swipe between full-screen applications | Swipe Left or Right with Four Fingers |
+
+Then 3-finger swipe ←/→ to switch tabs (⌃⇧Tab / ⌃Tab).
 
 ## Configure
 
@@ -57,14 +78,14 @@ Config lives in `~/.config/threefinger.json`, Karabiner-style. Written with defa
     {
       "from": { "gesture": "three_finger_swipe_left" },
       "to": [
-        { "key_code": "left_arrow", "modifiers": ["left_command", "left_option"] }
+        { "key_code": "tab", "modifiers": ["left_control", "left_shift"] }
       ],
       "type": "basic"
     },
     {
       "from": { "gesture": "three_finger_swipe_right" },
       "to": [
-        { "key_code": "right_arrow", "modifiers": ["left_command", "left_option"] }
+        { "key_code": "tab", "modifiers": ["left_control"] }
       ],
       "type": "basic"
     }
@@ -83,10 +104,6 @@ launchctl kickstart -k gui/$UID/com.firedev.threefinger
 ```
 
 Run `threefinger -v` in a terminal to watch gestures live while tuning (stop the daemon first, two instances double-fire).
-
-### iTerm2
-
-iTerm2 ships its own bindings on the same keys: ⌥⌘← is **Move Tab Left**, so a swipe drags the tab around instead of switching to it. Settings → Keys → Key Bindings: find the ⌥⌘←/⌥⌘→ entries and re-bind them to **Previous Tab** / **Next Tab** (or delete them — the swipe then falls through to the default tab switching).
 
 ## Uninstall
 
