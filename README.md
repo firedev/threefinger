@@ -45,18 +45,14 @@ threefinger --check        # status only (exit 1 if anything missing)
 threefinger --check --open # status + open the relevant Settings panes
 ```
 
-1. **Permissions** — grant them to the **binary**, not your terminal:
+1. **Permissions** — grant these to the **installed binary** (not your terminal):
 
-   | Install method | Binary path |
+   | Permission | Without it |
    | --- | --- |
-   | Homebrew | `$(brew --prefix)/bin/threefinger` |
-   | Installer script | `~/.local/bin/threefinger` |
-   | `make install` | `/usr/local/bin/threefinger` or `~/.local/bin/threefinger` |
+   | Accessibility | Swipes are detected, but keys never post |
+   | Input Monitoring | No multitouch devices show up |
 
-   - **Accessibility** — without it, swipes are detected but keys silently don't post  
-   - **Input Monitoring** — without it, no multitouch devices show up  
-
-   After every upgrade the binary changes — remove the old entry (**−**), then re-add. Toggling the switch is not enough.
+   > After every upgrade the binary changes — remove the old entry (**−**), then re-add. Toggling the switch is not enough.
 
 2. **Free the trackpad gesture** — macOS's own 3-finger ←/→ swipe grabs the same motion. With Accessibility granted, `--check --open` lands on **Trackpad → More Gestures**; set:
 
