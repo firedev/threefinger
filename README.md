@@ -50,9 +50,9 @@ Two quick things, then swipe:
    threefinger --check --open
    ```
 
-   Turn on **Accessibility** and **Input Monitoring** for `threefinger` when Settings asks (or opens those panes). Not for Terminal — for threefinger itself.
+   If a grant is missing, that opens **Accessibility** / **Input Monitoring** — turn them on for `threefinger` itself, not Terminal. Then run the same command again.
 
-2. **Give the swipe back.** macOS uses the same three-finger ←/→ for Spaces. In **Trackpad → More Gestures** set **Swipe between full-screen applications** to **Swipe Left or Right with Four Fingers**.  
+2. **Give the swipe back.** When permissions are ok, `--check --open` opens **Trackpad → More Gestures**. Set **Swipe between full-screen applications** to **Swipe Left or Right with Four Fingers**.  
    **Swipe between pages → Off** is optional, but nicer if Safari also grabs the gesture.
 
 Then three fingers left/right switch tabs.
