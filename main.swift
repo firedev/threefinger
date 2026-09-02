@@ -77,7 +77,7 @@ func selectTrackpadMoreGesturesTab() -> Bool {
 // ── --check [--open]: permission status for installers / debugging ──────
 if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("-c") {
     let doOpen = CommandLine.arguments.contains("--open")
-    let bin = URL(fileURLWithPath: CommandLine.arguments[0]).standardizedFileURL.path
+    let bin = URL(fileURLWithPath: CommandLine.arguments[0]).resolvingSymlinksInPath().path
     var ok = true
 
     print("Binary:           \(bin)")
@@ -133,7 +133,8 @@ if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("
         ok = false
     } else if daemons.count == 1 {
         print("Daemon:           ok (pid \(daemons[0].pid) — \(daemons[0].path))")
-        if URL(fileURLWithPath: daemons[0].path).standardizedFileURL.path != bin {
+        let daemonReal = URL(fileURLWithPath: daemons[0].path).resolvingSymlinksInPath().path
+        if daemonReal != bin {
             print("  ⚠ daemon path differs from this --check binary — grant Accessibility to the daemon path")
         }
     } else {
