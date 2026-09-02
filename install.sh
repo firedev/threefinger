@@ -47,7 +47,7 @@ cat <<'EOF'
        Swipe between pages                     → Off
        Swipe between full-screen applications  → Swipe Left or Right with Four Fingers
 
-Default: 3-finger swipe ←/→ switches tabs (⌃⇧Tab / ⌃Tab)
+Default: 3-finger swipe ←/→ switches tabs (Ctrl-Shift-Tab / Ctrl-Tab)
 Config:  ~/.config/threefinger.json
 
 EOF
