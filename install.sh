@@ -46,7 +46,10 @@ if [ "$replaced" = 1 ]; then
 EOF
 fi
 cat <<'EOF'
-  2. Trackpad → More Gestures
+  2. Restart so the grant applies to the running daemon:
+       launchctl kickstart -k gui/$UID/com.firedev.threefinger
+       # or: brew services restart threefinger
+  3. Trackpad → More Gestures
        Swipe between full-screen applications → Swipe Left or Right with Four Fingers
        Swipe between pages → Off  (optional)
 
