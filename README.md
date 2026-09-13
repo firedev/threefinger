@@ -63,7 +63,7 @@ make uninstall
 
 > Use **either** Homebrew **or** the curl installer — not both. Two daemons will fight over the same swipe.
 
-> After every upgrade, remove threefinger from Accessibility (**−**) and add the new binary again. Toggling the switch is not enough.
+> After every upgrade, remove threefinger from Accessibility (**−**) and add the new binary again, then restart the service. Toggling the switch is not enough — and a grant does not apply to a daemon that is already running.
 
 ## License
 
