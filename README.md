@@ -39,7 +39,7 @@ More: [firedev.com/projects/threefinger](https://firedev.com/projects/threefinge
 threefinger --reinstall
 ```
 
-Stops every copy (curl or Homebrew), installs the latest release, re-checks permissions.
+Stops every copy (curl or Homebrew), installs the latest release, re-checks permissions. Re-running the curl one-liner from Setup does the same thing — both are safe to run over an existing install.
 
 Switching from Homebrew to the curl install (one daemon, no rebuild on upgrade):
 
