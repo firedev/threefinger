@@ -14,7 +14,9 @@ curl -fsSL "https://github.com/$REPO/releases/latest/download/threefinger-arm64.
 # One daemon only — stop our agent and any Homebrew service copy.
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
 launchctl bootout "gui/$(id -u)/homebrew.mxcl.threefinger" 2>/dev/null || true
+launchctl bootout "gui/$(id -u)/sh.brew.threefinger" 2>/dev/null || true
 brew services stop threefinger 2>/dev/null || true
+brew list threefinger >/dev/null 2>&1 && brew_copy=1 || brew_copy=0
 mkdir -p "$BINDIR" "$AGENTS"
 if cmp -s "$tmp/threefinger" "$BINDIR/threefinger"; then
     replaced=0
@@ -57,3 +59,13 @@ Then three fingers left/right change tabs.
 Optional: keep Mission Control / App Exposé on three fingers (↑ all windows · ↓ this app).
 
 EOF
+
+if [ "$brew_copy" = 1 ]; then
+    cat <<'EOF'
+A Homebrew copy is still installed — `brew upgrade` would start a second daemon
+and swipes would double-fire. Remove it:
+
+  brew uninstall threefinger
+
+EOF
+fi

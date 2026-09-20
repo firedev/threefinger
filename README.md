@@ -31,6 +31,14 @@ Then swipe.
 
 More: [firedev.com/projects/threefinger](https://firedev.com/projects/threefinger/)
 
+## Update / repair
+
+```sh
+threefinger --reinstall
+```
+
+Stops every copy (curl or Homebrew), installs the latest release, re-checks permissions.
+
 ## Config
 
 Edit `~/.config/threefinger.json` (Karabiner-style). By default, left/right change tabs; you can map any shortcut. Restart after editing:

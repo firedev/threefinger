@@ -8,6 +8,8 @@ BINDIR="${BINDIR:-$HOME/.local/bin}"
 AGENTS="${AGENTS:-$HOME/Library/LaunchAgents}"
 
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
+launchctl bootout "gui/$(id -u)/sh.brew.threefinger" 2>/dev/null || true
+launchctl bootout "gui/$(id -u)/homebrew.mxcl.threefinger" 2>/dev/null || true
 rm -f "$BINDIR/threefinger" "$AGENTS/$LABEL.plist"
 
 echo ">>> Uninstalled."
