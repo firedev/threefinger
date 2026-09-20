@@ -5,7 +5,12 @@ let verbose = CommandLine.arguments.contains("-v") || CommandLine.arguments.cont
 func log(_ s: String) { if verbose { print(s) } }
 func err(_ s: String) { FileHandle.standardError.write((s + "\n").data(using: .utf8)!) }
 
-let VERSION = "1.1.5" // bump with the git tag at release
+let VERSION = "1.1.6" // bump with the git tag at release
+
+// A process launched from a terminal inherits the terminal's Accessibility
+// grant, so --check asking AXIsProcessTrusted() about itself says "ok" while
+// the daemon is denied. The daemon records what it actually got; --check reads it.
+let STATUS_PATH = ("~/Library/Caches/threefinger.status" as NSString).expandingTildeInPath
 
 // Anything unknown used to fall through and start a second daemon — swipes
 // then double-fire and look broken.
@@ -123,8 +128,14 @@ if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("
 
     print("Binary:           \(bin)")
 
-    let ax = AXIsProcessTrusted()
-    print("Accessibility:    \(ax ? "ok" : "MISSING — keys won't post")")
+    var daemonAX: Bool?
+    if let rec = try? String(contentsOfFile: STATUS_PATH, encoding: .utf8) {
+        let f = rec.split(separator: " ")
+        if f.count >= 2, let pid = Int32(f[0]), kill(pid, 0) == 0 { daemonAX = f[1] == "1" }
+    }
+    let ax = daemonAX ?? AXIsProcessTrusted()
+    let scope = daemonAX == nil ? " (no daemon record — checked this process)" : " (as the daemon sees it)"
+    print("Accessibility:    \(ax ? "ok" : "MISSING — keys won't post")\(scope)")
     if !ax {
         ok = false
         print("  → Privacy & Security → Accessibility → + → \(bin)")
@@ -299,7 +310,11 @@ for m in config.manipulators {
 if actions.isEmpty { err("threefinger: no usable manipulators in \(configURL.path)") }
 log("threefinger: \(actions.count) gesture(s) mapped, threshold \(threshold)")
 
-if !AXIsProcessTrusted() {
+let axTrusted = AXIsProcessTrusted()
+// What --check reports — written before the first swipe can fail silently.
+try? "\(ProcessInfo.processInfo.processIdentifier) \(axTrusted ? 1 : 0)\n"
+    .write(toFile: STATUS_PATH, atomically: true, encoding: .utf8)
+if !axTrusted {
     err("No Accessibility permission — key events won't post. System Settings → Privacy & Security → Accessibility → add this binary, then restart it.")
 }
 
