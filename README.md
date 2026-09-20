@@ -41,6 +41,13 @@ threefinger --reinstall
 
 Stops every copy (curl or Homebrew), installs the latest release, re-checks permissions.
 
+Switching from Homebrew to the curl install (one daemon, no rebuild on upgrade):
+
+```sh
+brew uninstall threefinger
+curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/install.sh | bash
+```
+
 ## Config
 
 Edit `~/.config/threefinger.json` (Karabiner-style). By default, left/right change tabs; you can map any shortcut. Restart after editing:
