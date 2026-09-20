@@ -5,7 +5,7 @@ let verbose = CommandLine.arguments.contains("-v") || CommandLine.arguments.cont
 func log(_ s: String) { if verbose { print(s) } }
 func err(_ s: String) { FileHandle.standardError.write((s + "\n").data(using: .utf8)!) }
 
-let VERSION = "1.1.6" // bump with the git tag at release
+let VERSION = "1.1.7" // bump with the git tag at release
 
 // A process launched from a terminal inherits the terminal's Accessibility
 // grant, so --check asking AXIsProcessTrusted() about itself says "ok" while
@@ -310,7 +310,11 @@ for m in config.manipulators {
 if actions.isEmpty { err("threefinger: no usable manipulators in \(configURL.path)") }
 log("threefinger: \(actions.count) gesture(s) mapped, threshold \(threshold)")
 
-let axTrusted = AXIsProcessTrusted()
+// Prompt, don't just report: the system dialog registers THIS binary's code
+// identity. Adding the path by hand re-uses a stale entry after every upgrade
+// and stays silently denied.
+let axTrusted = AXIsProcessTrustedWithOptions(
+    [kAXTrustedCheckOptionPrompt.takeUnretainedValue(): true] as CFDictionary)
 // What --check reports — written before the first swipe can fail silently.
 try? "\(ProcessInfo.processInfo.processIdentifier) \(axTrusted ? 1 : 0)\n"
     .write(toFile: STATUS_PATH, atomically: true, encoding: .utf8)
