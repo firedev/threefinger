@@ -5,6 +5,47 @@ let verbose = CommandLine.arguments.contains("-v") || CommandLine.arguments.cont
 func log(_ s: String) { if verbose { print(s) } }
 func err(_ s: String) { FileHandle.standardError.write((s + "\n").data(using: .utf8)!) }
 
+let VERSION = "1.1.5" // bump with the git tag at release
+
+// Anything unknown used to fall through and start a second daemon — swipes
+// then double-fire and look broken.
+let KNOWN_FLAGS: Set<String> = ["-v", "--verbose", "-c", "--check", "--open", "-V", "--version", "-h", "--help", "--reinstall"]
+for arg in CommandLine.arguments.dropFirst() where !KNOWN_FLAGS.contains(arg) {
+    err("threefinger: unknown option '\(arg)'")
+    err("usage: threefinger [-v] [--check [--open]] [--reinstall] [--version]")
+    exit(2)
+}
+if CommandLine.arguments.contains("--version") || CommandLine.arguments.contains("-V") {
+    print("threefinger \(VERSION)")
+    exit(0)
+}
+// The installer already stops every daemon (ours, both Homebrew labels) and
+// bootstraps a fresh one — don't reimplement it here.
+if CommandLine.arguments.contains("--reinstall") {
+    let sh = Process()
+    sh.executableURL = URL(fileURLWithPath: "/bin/bash")
+    sh.arguments = ["-c", "curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/install.sh | bash"]
+    do { try sh.run() } catch { err("threefinger: \(error.localizedDescription)"); exit(1) }
+    sh.waitUntilExit()
+    exit(sh.terminationStatus)
+}
+if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-h") {
+    print("""
+    threefinger \(VERSION) — three-finger trackpad swipes → keyboard shortcuts
+
+    usage: threefinger [-v] [--check [--open]] [--reinstall] [--version]
+
+      -v, --verbose   log each gesture
+      -c, --check     report permissions and daemon status (--open: open the panes)
+      --reinstall     stop every daemon and install the latest release
+      -V, --version   print version
+      -h, --help      this
+
+    config: ~/.config/threefinger.json
+    """)
+    exit(0)
+}
+
 let PREFS_AX = "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_Accessibility"
 let PREFS_INPUT = "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_ListenEvent"
 let PREFS_TRACKPAD = "x-apple.systempreferences:com.apple.Trackpad-Settings.extension"
@@ -315,14 +356,29 @@ func sym<T>(_ name: String, _ type: T.Type) -> T {
 let MTDeviceCreateList = sym("MTDeviceCreateList", (@convention(c) () -> Unmanaged<CFMutableArray>?).self)
 let MTRegisterContactFrameCallback = sym("MTRegisterContactFrameCallback", (@convention(c) (MTDeviceRef?, MTFrameCallbackFunction?) -> Void).self)
 let MTDeviceStart = sym("MTDeviceStart", (@convention(c) (MTDeviceRef?, Int32) -> Void).self)
+let MTDeviceStop = sym("MTDeviceStop", (@convention(c) (MTDeviceRef?) -> Void).self)
 
-guard let list = MTDeviceCreateList()?.takeUnretainedValue(), CFArrayGetCount(list) > 0 else {
+// Devices registered before a sleep stop delivering frames after wake — the
+// process stays alive and silently does nothing. Re-register on every wake.
+var devices = [MTDeviceRef?]()
+func watchDevices() {
+    for dev in devices { MTDeviceStop(dev) }
+    devices = []
+    guard let list = MTDeviceCreateList()?.takeUnretainedValue(), CFArrayGetCount(list) > 0 else { return }
+    for i in 0..<CFArrayGetCount(list) {
+        let dev = UnsafeMutableRawPointer(mutating: CFArrayGetValueAtIndex(list, i))
+        MTRegisterContactFrameCallback(dev, frameCallback)
+        MTDeviceStart(dev, 0)
+        devices.append(dev)
+    }
+    log("threefinger: watching \(devices.count) multitouch device(s)")
+}
+
+watchDevices()
+if devices.isEmpty {
     fatalError("no multitouch devices found (Input Monitoring permission missing?)")
 }
-for i in 0..<CFArrayGetCount(list) {
-    let dev = UnsafeMutableRawPointer(mutating: CFArrayGetValueAtIndex(list, i))
-    MTRegisterContactFrameCallback(dev, frameCallback)
-    MTDeviceStart(dev, 0)
-}
-log("threefinger: watching \(CFArrayGetCount(list)) multitouch device(s)")
+NSWorkspace.shared.notificationCenter.addObserver(
+    forName: NSWorkspace.didWakeNotification, object: nil, queue: .main
+) { _ in watchDevices() }
 CFRunLoopRun()
