@@ -1,5 +1,7 @@
 # threefinger
 
+> **Get 1.1.5 or newer** — earlier versions stopped swiping after the Mac slept. `threefinger --version` to check, `threefinger --reinstall` to update.
+
 Swipe with three fingers on the Mac trackpad to change tabs.
 
 Left/right posts `Ctrl-Shift-Tab` / `Ctrl-Tab`. Works in Safari, Chrome, Firefox, and most tabbed apps.
@@ -32,8 +34,6 @@ Then swipe.
 More: [firedev.com/projects/threefinger](https://firedev.com/projects/threefinger/)
 
 ## Update / repair
-
-**Get 1.1.5 or newer.** Before it, swipes stopped working after the Mac slept — the daemon stayed running but never saw the trackpad again. Check with `threefinger --version`.
 
 ```sh
 threefinger --reinstall
