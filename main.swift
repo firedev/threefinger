@@ -5,7 +5,7 @@ let verbose = CommandLine.arguments.contains("-v") || CommandLine.arguments.cont
 func log(_ s: String) { if verbose { print(s) } }
 func err(_ s: String) { FileHandle.standardError.write((s + "\n").data(using: .utf8)!) }
 
-let VERSION = "1.1.7" // bump with the git tag at release
+let VERSION = "1.1.8" // bump with the git tag at release
 
 // A process launched from a terminal inherits the terminal's Accessibility
 // grant, so --check asking AXIsProcessTrusted() about itself says "ok" while
@@ -130,7 +130,7 @@ if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("
 
     var daemonAX: Bool?
     if let rec = try? String(contentsOfFile: STATUS_PATH, encoding: .utf8) {
-        let f = rec.split(separator: " ")
+        let f = rec.split(whereSeparator: { $0 == " " || $0 == "\n" })
         if f.count >= 2, let pid = Int32(f[0]), kill(pid, 0) == 0 { daemonAX = f[1] == "1" }
     }
     let ax = daemonAX ?? AXIsProcessTrusted()
