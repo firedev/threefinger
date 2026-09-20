@@ -33,6 +33,8 @@ More: [firedev.com/projects/threefinger](https://firedev.com/projects/threefinge
 
 ## Update / repair
 
+**Get 1.1.5 or newer.** Before it, swipes stopped working after the Mac slept — the daemon stayed running but never saw the trackpad again. Check with `threefinger --version`.
+
 ```sh
 threefinger --reinstall
 ```
