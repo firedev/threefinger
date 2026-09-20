@@ -23,7 +23,7 @@ install: threefinger
 	@printf '\nNext:\n'
 	@printf '  1. Allow threefinger in System Settings (Accessibility + Input Monitoring)\n'
 	@printf '     — for threefinger itself, not Terminal.\n'
-	@printf '     After reinstall: remove (−), then re-add $(BINDIR)/threefinger\n'
+	@printf '     After reinstall: approve the dialog the daemon shows; remove any old (−) entry\n'
 	@printf '  2. Restart so the grant applies: launchctl kickstart -k gui/$$(id -u)/$(LABEL)\n'
 	@printf '  3. Trackpad → More Gestures\n'
 	@printf '       Swipe between full-screen applications → Swipe Left or Right with Four Fingers\n'

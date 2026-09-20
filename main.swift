@@ -139,7 +139,7 @@ if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("
     if !ax {
         ok = false
         print("  → Privacy & Security → Accessibility → + → \(bin)")
-        print("    (after replace: remove (−) first; toggling is not enough)")
+        print("    (the daemon also asks on start — approve that dialog; drop stale entries)")
     }
 
     let n = multitouchDeviceCount()

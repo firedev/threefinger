@@ -43,8 +43,8 @@ Next:
 EOF
 if [ "$replaced" = 1 ]; then
     cat <<EOF
-     Binary was replaced: remove the old entry (−), then add again
-     ($BINDIR/threefinger). Toggling is not enough.
+     Binary was replaced: the daemon asks for Accessibility itself on start —
+     approve the dialog. Remove any old (−) entry; it grants nothing now.
 EOF
 fi
 cat <<'EOF'
