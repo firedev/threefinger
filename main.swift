@@ -1,11 +1,11 @@
 import Cocoa
 
-setbuf(stdout, nil) // -v output is tiny; unbuffered keeps it visible under redirection/launchd
-let verbose = CommandLine.arguments.contains("-v") || CommandLine.arguments.contains("--verbose")
-func log(_ s: String) { if verbose { print(s) } }
+setbuf(stdout, nil) // --debug output is tiny; unbuffered keeps it visible under redirection/launchd
+let debug = CommandLine.arguments.contains("-d") || CommandLine.arguments.contains("--debug")
+func log(_ s: String) { if debug { print(s) } }
 func err(_ s: String) { FileHandle.standardError.write((s + "\n").data(using: .utf8)!) }
 
-let VERSION = "1.1.8" // bump with the git tag at release
+let VERSION = "1.2.0" // bump with the git tag at release
 
 // A process launched from a terminal inherits the terminal's Accessibility
 // grant, so --check asking AXIsProcessTrusted() about itself says "ok" while
@@ -14,10 +14,10 @@ let STATUS_PATH = ("~/Library/Caches/threefinger.status" as NSString).expandingT
 
 // Anything unknown used to fall through and start a second daemon — swipes
 // then double-fire and look broken.
-let KNOWN_FLAGS: Set<String> = ["-v", "--verbose", "-c", "--check", "--open", "-V", "--version", "-h", "--help", "--reinstall"]
+let KNOWN_FLAGS: Set<String> = ["-d", "--debug", "-c", "--check", "--open", "-V", "--version", "-h", "--help", "--reinstall"]
 for arg in CommandLine.arguments.dropFirst() where !KNOWN_FLAGS.contains(arg) {
     err("threefinger: unknown option '\(arg)'")
-    err("usage: threefinger [-v] [--check [--open]] [--reinstall] [--version]")
+    err("usage: threefinger [-d] [--check [--open]] [--reinstall] [--version]")
     exit(2)
 }
 if CommandLine.arguments.contains("--version") || CommandLine.arguments.contains("-V") {
@@ -38,9 +38,9 @@ if CommandLine.arguments.contains("--help") || CommandLine.arguments.contains("-
     print("""
     threefinger \(VERSION) — three-finger trackpad swipes → keyboard shortcuts
 
-    usage: threefinger [-v] [--check [--open]] [--reinstall] [--version]
+    usage: threefinger [-d] [--check [--open]] [--reinstall] [--version]
 
-      -v, --verbose   log each gesture
+      -d, --debug     log each gesture
       -c, --check     report permissions and daemon status (--open: open the panes)
       --reinstall     stop every daemon and install the latest release
       -V, --version   print version
@@ -138,7 +138,7 @@ if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("
     print("Accessibility:    \(ax ? "ok" : "MISSING — keys won't post")\(scope)")
     if !ax {
         ok = false
-        print("  → Privacy & Security → Accessibility → + → \(bin)")
+        print("  → Privacy & Security → Accessibility / Device Control and Data Access → + → \(bin)")
         print("    (the daemon also asks on start — approve that dialog; drop stale entries)")
     }
 
@@ -235,14 +235,14 @@ let DEFAULT_CONFIG = """
     {
       "from": { "gesture": "three_finger_swipe_left" },
       "to": [
-        { "key_code": "tab", "modifiers": ["left_control", "left_shift"] }
+        { "key_code": "open_bracket", "modifiers": ["left_command", "left_shift"] }
       ],
       "type": "basic"
     },
     {
       "from": { "gesture": "three_finger_swipe_right" },
       "to": [
-        { "key_code": "tab", "modifiers": ["left_control"] }
+        { "key_code": "close_bracket", "modifiers": ["left_command", "left_shift"] }
       ],
       "type": "basic"
     }
@@ -276,6 +276,7 @@ let KEY_CODES: [String: CGKeyCode] = [
     "b": 11, "q": 12, "w": 13, "e": 14, "r": 15, "y": 16, "t": 17, "o": 31, "u": 32,
     "i": 34, "p": 35, "l": 37, "j": 38, "k": 40, "n": 45, "m": 46,
     "1": 18, "2": 19, "3": 20, "4": 21, "5": 23, "6": 22, "7": 26, "8": 28, "9": 25, "0": 29,
+    "open_bracket": 33, "close_bracket": 30,
     "return_or_enter": 36, "escape": 53, "tab": 48, "spacebar": 49, "delete_or_backspace": 51,
     "left_arrow": 123, "right_arrow": 124, "down_arrow": 125, "up_arrow": 126,
     "page_up": 116, "page_down": 121, "home": 115, "end": 119,
@@ -319,7 +320,11 @@ let axTrusted = AXIsProcessTrustedWithOptions(
 try? "\(ProcessInfo.processInfo.processIdentifier) \(axTrusted ? 1 : 0)\n"
     .write(toFile: STATUS_PATH, atomically: true, encoding: .utf8)
 if !axTrusted {
-    err("No Accessibility permission — key events won't post. System Settings → Privacy & Security → Accessibility → add this binary, then restart it.")
+    err("No Accessibility permission — key events won't post. Approve the dialog; the daemon restarts itself once granted.")
+    // The grant only reaches a fresh process — exit and let launchd KeepAlive relaunch us.
+    Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+        if AXIsProcessTrusted() { log("threefinger: Accessibility granted — restarting"); exit(0) }
+    }
 }
 
 func fire(_ gesture: String) {

@@ -6,7 +6,7 @@ threefinger: main.swift mt.h
 	swiftc -O -import-objc-header mt.h -o threefinger main.swift
 
 run: threefinger
-	./threefinger -v
+	./threefinger --debug
 
 install: threefinger
 	-launchctl bootout gui/$$(id -u)/$(LABEL) 2>/dev/null
@@ -14,18 +14,17 @@ install: threefinger
 	-launchctl bootout gui/$$(id -u)/sh.brew.threefinger 2>/dev/null
 	-brew services stop threefinger 2>/dev/null
 	mkdir -p $(BINDIR)
-	cp threefinger $(BINDIR)/threefinger
+	install -m 755 threefinger $(BINDIR)/threefinger
 	sed 's|/usr/local/bin|$(BINDIR)|' $(LABEL).plist > $(PLIST)
 	launchctl bootstrap gui/$$(id -u) $(PLIST)
 	@printf '\nInstalled: $(BINDIR)/threefinger\n\n'
 	@printf 'Permissions:\n'
 	@$(BINDIR)/threefinger --check --open || true
 	@printf '\nNext:\n'
-	@printf '  1. Allow threefinger in System Settings (Accessibility + Input Monitoring)\n'
+	@printf '  1. Allow threefinger in System Settings (Accessibility / Device Control and Data Access + Input Monitoring)\n'
 	@printf '     — for threefinger itself, not Terminal.\n'
 	@printf '     After reinstall: approve the dialog the daemon shows; remove any old (−) entry\n'
-	@printf '  2. Restart so the grant applies: launchctl kickstart -k gui/$$(id -u)/$(LABEL)\n'
-	@printf '  3. Trackpad → More Gestures\n'
+	@printf '  2. Trackpad → More Gestures\n'
 	@printf '       Swipe between full-screen applications → Swipe Left or Right with Four Fingers\n'
 	@printf '       Swipe between pages → Off  (optional)\n\n'
 	@printf 'Then three fingers left/right change tabs.\n'

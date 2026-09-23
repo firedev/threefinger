@@ -4,7 +4,7 @@
 
 Swipe with three fingers on the Mac trackpad to change tabs.
 
-Left/right posts `Ctrl-Shift-Tab` / `Ctrl-Tab`. Works in Safari, Chrome, Firefox, and most tabbed apps.
+Left/right posts `Cmd-Shift-[` / `Cmd-Shift-]`. Works in Safari, Chrome, Firefox, and most tabbed apps.
 
 ![threefinger demo](demo.gif)
 
@@ -18,7 +18,7 @@ Keep **Mission Control** and **App Exposé** on three fingers and you get a full
 
 ## Setup
 
-1. Install and allow threefinger when Settings asks (Accessibility + Input Monitoring — for threefinger, not Terminal):
+1. Install and allow threefinger when Settings asks (**Accessibility** — on newer macOS **Device Control and Data Access** — and **Input Monitoring**; for threefinger, not Terminal):
 
    ```sh
    curl -fsSL https://raw.githubusercontent.com/firedev/threefinger/master/install.sh | bash
@@ -80,7 +80,7 @@ make uninstall
 
 > Use **either** Homebrew **or** the curl installer — not both. Two daemons will fight over the same swipe.
 
-> After every upgrade, remove threefinger from Accessibility (**−**) and add the new binary again, then restart the service. Toggling the switch is not enough — and a grant does not apply to a daemon that is already running.
+> After every upgrade macOS asks for Accessibility again — approve the dialog and the daemon restarts itself. Leftover threefinger entries in the list can be removed (**−**).
 
 ## License
 

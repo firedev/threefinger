@@ -38,7 +38,7 @@ EOF
 cat <<EOF
 
 Next:
-  1. Allow threefinger in System Settings (Accessibility + Input Monitoring)
+  1. Allow threefinger in System Settings (Accessibility / Device Control and Data Access + Input Monitoring)
      — for threefinger itself, not Terminal.
 EOF
 if [ "$replaced" = 1 ]; then
@@ -48,10 +48,7 @@ if [ "$replaced" = 1 ]; then
 EOF
 fi
 cat <<'EOF'
-  2. Restart so the grant applies to the running daemon:
-       launchctl kickstart -k gui/$UID/com.firedev.threefinger
-       # or: brew services restart threefinger
-  3. Trackpad → More Gestures
+  2. Trackpad → More Gestures
        Swipe between full-screen applications → Swipe Left or Right with Four Fingers
        Swipe between pages → Off  (optional)
 
