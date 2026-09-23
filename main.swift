@@ -317,8 +317,12 @@ log("threefinger: \(actions.count) gesture(s) mapped, threshold \(threshold)")
 let axTrusted = AXIsProcessTrustedWithOptions(
     [kAXTrustedCheckOptionPrompt.takeUnretainedValue(): true] as CFDictionary)
 // What --check reports — written before the first swipe can fail silently.
-try? "\(ProcessInfo.processInfo.processIdentifier) \(axTrusted ? 1 : 0)\n"
-    .write(toFile: STATUS_PATH, atomically: true, encoding: .utf8)
+// Daemon only (parent is launchd): a terminal run borrows the terminal's
+// Accessibility and would report a grant the daemon doesn't have.
+if getppid() == 1 {
+    try? "\(ProcessInfo.processInfo.processIdentifier) \(axTrusted ? 1 : 0)\n"
+        .write(toFile: STATUS_PATH, atomically: true, encoding: .utf8)
+}
 if !axTrusted {
     err("No Accessibility permission — key events won't post. Approve the dialog; the daemon restarts itself once granted.")
     // The grant only reaches a fresh process — exit and let launchd KeepAlive relaunch us.

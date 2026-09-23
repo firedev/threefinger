@@ -80,7 +80,7 @@ make uninstall
 
 > Use **either** Homebrew **or** the curl installer — not both. Two daemons will fight over the same swipe.
 
-> After every upgrade the old Accessibility entry stops working, even though it still shows as on. Select threefinger, click **−**, then **+** → `~/.local/bin/threefinger`. The daemon restarts itself once granted.
+> From 1.2.0 the release binary is signed, so upgrades keep the Accessibility grant. Coming from 1.1.x or a Homebrew build (ad-hoc signed, every upgrade), the old entry stops working even though it still shows as on. Select threefinger, click **−**, then **+** → `~/.local/bin/threefinger`. The daemon restarts itself once granted.
 
 ## License
 

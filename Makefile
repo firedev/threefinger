@@ -2,8 +2,14 @@ LABEL  = com.firedev.threefinger
 PLIST  = $(HOME)/Library/LaunchAgents/$(LABEL).plist
 BINDIR = $(shell [ -w /usr/local/bin ] && echo /usr/local/bin || echo $(HOME)/.local/bin)
 
+# Sign with a real identity when there is one: Accessibility grants follow the
+# signing identity, so upgrades keep them. Ad-hoc signing (no identity) changes
+# every build and the grant goes stale.
+SIGN ?= $(shell security find-identity -v -p codesigning 2>/dev/null | awk -F'"' 'NR==1 && NF>1 {print $$2}')
+
 threefinger: main.swift mt.h
 	swiftc -O -import-objc-header mt.h -o threefinger main.swift
+	$(if $(SIGN),codesign -f -s "$(SIGN)" -i $(LABEL) threefinger)
 
 run: threefinger
 	./threefinger --debug
