@@ -139,7 +139,7 @@ if CommandLine.arguments.contains("--check") || CommandLine.arguments.contains("
     if !ax {
         ok = false
         print("  → Privacy & Security → Accessibility / Device Control and Data Access → + → \(bin)")
-        print("    (the daemon also asks on start — approve that dialog; drop stale entries)")
+        print("    (an existing threefinger entry is stale after an upgrade even if it shows on — remove it with − first)")
     }
 
     let n = multitouchDeviceCount()

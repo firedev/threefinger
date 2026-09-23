@@ -80,7 +80,7 @@ make uninstall
 
 > Use **either** Homebrew **or** the curl installer — not both. Two daemons will fight over the same swipe.
 
-> After every upgrade macOS asks for Accessibility again — approve the dialog and the daemon restarts itself. Leftover threefinger entries in the list can be removed (**−**).
+> After every upgrade the old Accessibility entry stops working, even though it still shows as on. Select threefinger, click **−**, then **+** → `~/.local/bin/threefinger`. The daemon restarts itself once granted.
 
 ## License
 

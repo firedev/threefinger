@@ -23,7 +23,7 @@ install: threefinger
 	@printf '\nNext:\n'
 	@printf '  1. Allow threefinger in System Settings (Accessibility / Device Control and Data Access + Input Monitoring)\n'
 	@printf '     — for threefinger itself, not Terminal.\n'
-	@printf '     After reinstall: approve the dialog the daemon shows; remove any old (−) entry\n'
+	@printf '     After reinstall: the old entry is stale even if on — remove it (−), then + the binary\n'
 	@printf '  2. Trackpad → More Gestures\n'
 	@printf '       Swipe between full-screen applications → Swipe Left or Right with Four Fingers\n'
 	@printf '       Swipe between pages → Off  (optional)\n\n'
