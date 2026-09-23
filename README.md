@@ -8,13 +8,14 @@ Left/right posts `Cmd-Shift-[` / `Cmd-Shift-]`. Works in Safari, Chrome, Firefox
 
 ![threefinger demo](demo.gif)
 
-Keep **Mission Control** and **App Exposé** on three fingers and you get a full set:
+Move the system gestures to four fingers and you get a full set:
 
-| Three fingers | Does |
-| --- | --- |
-| ← / → | Previous / next tab |
-| ↑ | All windows |
-| ↓ | Windows for this app |
+| Fingers | Swipe | Does |
+| --- | --- | --- |
+| Three | ← / → | Previous / next tab |
+| Four | ↑ | Mission Control |
+| Four | ↓ | App Exposé |
+| Four | ← / → | Full-screen apps |
 
 ## Setup
 
@@ -27,7 +28,11 @@ Keep **Mission Control** and **App Exposé** on three fingers and you get a full
 
    Or: `brew install firedev/tap/threefinger && brew services start threefinger`
 
-2. In **Trackpad → More Gestures**, set **Swipe between full-screen applications** to **Swipe Left or Right with Four Fingers** so macOS doesn’t steal the horizontal swipe. **Swipe between pages → Off** is optional.
+2. In **Trackpad → More Gestures**, move everything to four fingers so macOS doesn’t steal the three-finger swipe:
+   - **Mission Control** → **Swipe Up with Four Fingers**
+   - **App Exposé** → **Swipe Down with Four Fingers**
+   - **Swipe between full-screen applications** → **Swipe Left or Right with Four Fingers**
+   - **Swipe between pages** → **Off** (optional)
 
 Then swipe.
 

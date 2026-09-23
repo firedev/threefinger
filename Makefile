@@ -29,12 +29,13 @@ install: threefinger
 	@printf '\nNext:\n'
 	@printf '  1. Allow threefinger in System Settings (Accessibility / Device Control and Data Access + Input Monitoring)\n'
 	@printf '     — for threefinger itself, not Terminal.\n'
-	@printf '     After reinstall: the old entry is stale even if on — remove it (−), then + the binary\n'
+	@printf '     Unsigned (ad-hoc) builds: the old entry goes stale on reinstall — remove it (−), then + the binary\n'
 	@printf '  2. Trackpad → More Gestures\n'
+	@printf '       Mission Control → Swipe Up with Four Fingers\n'
+	@printf '       App Exposé → Swipe Down with Four Fingers\n'
 	@printf '       Swipe between full-screen applications → Swipe Left or Right with Four Fingers\n'
 	@printf '       Swipe between pages → Off  (optional)\n\n'
-	@printf 'Then three fingers left/right change tabs.\n'
-	@printf 'Optional: keep Mission Control / App Exposé on three fingers (up all windows · down this app).\n\n'
+	@printf 'Then three fingers left/right change tabs.\n\n'
 
 uninstall:
 	-launchctl bootout gui/$$(id -u)/$(LABEL) 2>/dev/null
